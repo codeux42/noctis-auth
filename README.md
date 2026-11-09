@@ -5,24 +5,29 @@
 </p>
 
 <p align="center">
-  <strong>Authentificateur TOTP (A2F) local, chiffré et sans compte en ligne.</strong><br>
-  Windows 10 / 11 · interface liquid glass · 119 services · mises à jour vérifiées
+  <a href="https://github.com/codeux42/noctis-auth/releases/latest/download/NoctisAuth_Setup.exe">
+    <img alt="Télécharger NoctisAuth_Setup.exe" src="https://img.shields.io/badge/T%C3%A9l%C3%A9charger-NoctisAuth__Setup.exe-F4C542?style=for-the-badge&logo=windows&logoColor=111111">
+  </a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/codeux42/noctis-auth/releases/latest">
-    <img alt="Dernière version" src="https://img.shields.io/github/v/release/codeux42/noctis-auth?style=flat-square&color=F4C542">
+  <img alt="Dernière version" src="https://img.shields.io/github/v/release/codeux42/noctis-auth?style=flat-square&color=F4C542">
+  <img alt="Windows 10 / 11" src="https://img.shields.io/badge/Windows-10%20%7C%2011-0078D4?style=flat-square">
+  <a href="https://github.com/codeux42/noctis-auth/releases/latest/download/NoctisAuth_Setup.exe.sha256">
+    <img alt="Intégrité SHA-256" src="https://img.shields.io/badge/int%C3%A9grit%C3%A9-SHA--256-4AD295?style=flat-square">
   </a>
   <a href="https://github.com/codeux42/noctis-auth/actions/workflows/build-release.yml">
     <img alt="Compilation" src="https://img.shields.io/github/actions/workflow/status/codeux42/noctis-auth/build-release.yml?style=flat-square">
   </a>
-  <img alt="Windows" src="https://img.shields.io/badge/Windows-10%20%7C%2011-0078D4?style=flat-square">
 </p>
 
-> Les liens ci-dessus utilisent le compte et le nom du dépôt GitHub. Après création
-> du dépôt, lance `py scripts\configure_repo.py --owner TON_COMPTE --repo noctis-auth` :
-> les badges, le lien de téléchargement et le système de mises à jour seront alignés.
-> Le fichier `NoctisAuth_Setup.exe` est publié automatiquement dans **Releases**.
+<p align="center">
+  <strong>Authentificateur TOTP (A2F) local, chiffré et sans compte en ligne.</strong><br>
+  Installation en un clic · aucun Python requis · coffre conservé lors des mises à jour
+</p>
+
+> Le bouton ci-dessus pointe **toujours vers la dernière version publiée**.
+> `NoctisAuth_Setup.exe` est compilé et ajouté automatiquement aux Releases par GitHub Actions.
 
 ---
 

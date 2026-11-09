@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+.venv/
+venv/
+env/
+
+# Build et distributions
+build/
+dist/
+release-notes.md
+*.sha256
+*.spec.bak
+
+# Caches d'outils
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Secrets et données locales — NE JAMAIS COMMITTER
+.env
+.env.*
+vault.json
+settings.json
+*.pem
+*.pfx
+*.key
+
+# Système
+Thumbs.db
+Desktop.ini
+.DS_Store
+*.log
+*.new
+*.part

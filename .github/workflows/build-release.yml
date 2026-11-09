@@ -1,0 +1,111 @@
+name: Build & Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  windows:
+    name: Windows 10/11 — NoctisAuth_Setup.exe
+    runs-on: windows-latest
+    env:
+      PYTHONUTF8: '1'
+      PYTHONIOENCODING: 'utf-8'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-build.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-build.txt --disable-pip-version-check
+
+      - name: Configure update repository
+        run: python scripts/configure_repo.py --from-environment
+
+      - name: Check version
+        run: python scripts/check_version.py
+
+      - name: Tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Build application
+        run: >
+          python -m PyInstaller --noconfirm --clean
+          --distpath dist --workpath build/app
+          packaging/NoctisAuth.spec
+
+      - name: Build standalone installer
+        run: >
+          python -m PyInstaller --noconfirm --clean
+          --distpath dist --workpath build/setup
+          packaging/NoctisAuth_Setup.spec
+
+      - name: Checksums
+        run: python scripts/make_checksum.py
+
+      - name: Verify artifacts
+        shell: pwsh
+        run: |
+          $setup = "dist/NoctisAuth_Setup.exe"
+          $app = "dist/NoctisAuth.exe"
+          if (-not (Test-Path $setup)) { throw "Installateur manquant." }
+          if (-not (Test-Path $app)) { throw "Application manquante." }
+          if (-not (Test-Path "$setup.sha256")) { throw "Empreinte manquante." }
+          $expected = (Get-Content "$setup.sha256" -Raw).Trim().Split()[0].ToLower()
+          $actual = (Get-FileHash $setup -Algorithm SHA256).Hash.ToLower()
+          if ($expected -ne $actual) { throw "Intégrité de l'installateur invalide." }
+          Write-Host "SHA-256 vérifié : $actual"
+
+      - name: Release notes
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: python scripts/release_notes.py --version "${{ github.ref_name }}" --output release-notes.md
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: NoctisAuth-windows
+          path: |
+            dist/NoctisAuth_Setup.exe
+            dist/NoctisAuth_Setup.exe.sha256
+            dist/NoctisAuth.exe
+            dist/NoctisAuth.exe.sha256
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Noctis Auth ${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}
+          body_path: release-notes.md
+          files: |
+            dist/NoctisAuth_Setup.exe
+            dist/NoctisAuth_Setup.exe.sha256
+            dist/NoctisAuth.exe
+            dist/NoctisAuth.exe.sha256
+          fail_on_unmatched_files: true
+          draft: false
+          prerelease: false
+          make_latest: true

@@ -1,0 +1,28 @@
+NOCTIS AUTH 2.9.0
+
+- Installateur Windows unique : NoctisAuth_Setup.exe. Aucun Python, aucune
+  dépendance et aucune fenêtre de commande ne sont nécessaires.
+- Installation graphique « liquid glass » avec le logo Noctis, une barre de
+  progression réelle et un pourcentage calculé sur les octets copiés.
+- Raccourci sur le Bureau (optionnel), entrée dans le menu Démarrer et
+  désinstallation propre depuis les paramètres Windows.
+- Les mises à jour sont vérifiées sur GitHub Releases, puis l'installateur est
+  contrôlé par empreinte SHA-256 avant d'être exécuté.
+- Le coffre chiffré et les comptes A2F sont toujours conservés lors d'une
+  installation, d'une mise à jour ou d'une désinstallation (sauf case explicite).
+- Interface, design, 119 services, recherche instantanée et défilement corrigé
+  de la version 2.8 conservés à l'identique.
+- Coffre local chiffré AES-256-GCM dans %APPDATA%\\NoctisAuth.
+- Aucune clé ni aucun code ne sont générés aléatoirement.
+- Les clés sont vérifiées avant d'être enregistrées.
+
+Compilation développeur :
+1. Installer Python 3.11 ou plus récent.
+2. Double-cliquer sur BUILD.bat, ou lancer scripts\\build.ps1.
+3. L'installateur est créé dans dist\\NoctisAuth_Setup.exe.
+
+Publication :
+1. Compléter CHANGELOG.md.
+2. Lancer py scripts\\bump_version.py X.Y.Z.
+3. Créer le tag vX.Y.Z et le pousser : GitHub Actions compile et publie
+   automatiquement l'installateur et son empreinte SHA-256.

@@ -3,6 +3,14 @@
 Toutes les versions publiées sont disponibles dans les
 [Releases GitHub](https://github.com/codeux42/noctis-auth/releases).
 
+## [2.9.1] - 2026-11-10
+
+### Modifié
+
+- Liste des services recentrée sur les services retenus pour l'ajout d'une clé TOTP/Base32.
+- Logos de services affichés à partir de leurs favicons, avec cache local.
+- Conservation du coffre chiffré et du calcul TOTP hors ligne.
+
 ## [2.9.0] - 2026-11-08
 
 ### Ajouté

@@ -21,6 +21,8 @@ import tkinter as tk
 import unicodedata
 import webbrowser
 from pathlib import Path
+import io
+import urllib.request
 
 import customtkinter as ctk
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
@@ -122,131 +124,40 @@ FONT_UI = 'Segoe UI'
 # Services (> 110) : nom, couleur, monogramme, catégorie
 # ---------------------------------------------------------------------------
 SERVICE_ROWS = [
-    # Gaming
+    # Services proposant une authentification par application TOTP
     ('Discord', '#5865F2', 'D', 'Gaming'),
-    ('Steam', '#1B2838', 'ST', 'Gaming'),
     ('Epic Games', '#2A2A2E', 'EG', 'Gaming'),
     ('PlayStation', '#003791', 'PS', 'Gaming'),
-    ('Xbox', '#107C10', 'XB', 'Gaming'),
-    ('Nintendo', '#E60012', 'NT', 'Gaming'),
-    ('Battle.net', '#148EFF', 'BN', 'Gaming'),
     ('Ubisoft Connect', '#0070FF', 'UB', 'Gaming'),
-    ('EA App', '#FF4747', 'EA', 'Gaming'),
-    ('Riot Games', '#D32936', 'RG', 'Gaming'),
     ('Roblox', '#DA3737', 'RB', 'Gaming'),
     ('Twitch', '#9146FF', 'TW', 'Gaming'),
-    ('GOG', '#7B2FBE', 'GG', 'Gaming'),
-    ('Rockstar Games', '#FCAF17', 'RS', 'Gaming'),
-    ('Minecraft', '#62B47A', 'MC', 'Gaming'),
-    ('Fortnite', '#9D4DFF', 'FN', 'Gaming'),
-    ('HoYoverse', '#4A90E2', 'HY', 'Gaming'),
-    ('Genshin Impact', '#4E86C8', 'GI', 'Gaming'),
-    ('Warframe', '#1B4D6B', 'WF', 'Gaming'),
-    ('Path of Exile', '#AF7B2C', 'PE', 'Gaming'),
-    # Tech / cloud / dev
     ('Google', '#4285F4', 'G', 'Internet'),
     ('Microsoft', '#4EA0F1', 'MS', 'Internet'),
-    ('Apple', '#8B939B', 'AP', 'Internet'),
     ('GitHub', '#8B949E', 'GH', 'Développeur'),
     ('GitLab', '#FC6D26', 'GL', 'Développeur'),
     ('Bitbucket', '#2684FF', 'BB', 'Développeur'),
     ('Amazon AWS', '#FF9900', 'AWS', 'Cloud'),
-    ('Microsoft Azure', '#0078D4', 'AZ', 'Cloud'),
-    ('Google Cloud', '#4285F4', 'GC', 'Cloud'),
     ('Cloudflare', '#F38020', 'CF', 'Cloud'),
     ('DigitalOcean', '#0080FF', 'DO', 'Cloud'),
     ('Vercel', '#E8E8E8', 'VC', 'Développeur'),
     ('Netlify', '#00C7B7', 'NL', 'Développeur'),
     ('Docker', '#2496ED', 'DK', 'Développeur'),
-    ('npm', '#CB3837', 'NPM', 'Développeur'),
-    ('PyPI', '#3775A9', 'PY', 'Développeur'),
     ('OpenAI', '#74AA9C', 'AI', 'Intelligence artificielle'),
-    ('Anthropic', '#D4A27F', 'AN', 'Intelligence artificielle'),
-    ('Hugging Face', '#FFD21E', 'HF', 'Intelligence artificielle'),
-    ('Stack Overflow', '#F48024', 'SO', 'Développeur'),
-    ('JetBrains', '#FE315D', 'JB', 'Développeur'),
-    ('Figma', '#F24E1E', 'FG', 'Création'),
-    # Productivité / stockage
     ('Notion', '#D8D8D8', 'NO', 'Productivité'),
-    ('Linear', '#5E6AD2', 'LN', 'Productivité'),
-    ('Atlassian', '#0052CC', 'AT', 'Productivité'),
     ('Slack', '#4A154B', 'SL', 'Productivité'),
     ('Zoom', '#2D8CFF', 'ZM', 'Productivité'),
     ('Dropbox', '#0061FF', 'DB', 'Stockage'),
-    ('Box', '#0061D5', 'BX', 'Stockage'),
-    ('MEGA', '#D9272E', 'MG', 'Stockage'),
     ('Proton', '#6D4AFF', 'PR', 'Sécurité'),
-    ('LastPass', '#D32D27', 'LP', 'Sécurité'),
-    ('1Password', '#0094F5', '1P', 'Sécurité'),
     ('Bitwarden', '#175DDC', 'BW', 'Sécurité'),
-    ('Trello', '#0079BF', 'TR', 'Productivité'),
-    ('Asana', '#F06A6A', 'AS', 'Productivité'),
-    ('Todoist', '#E44332', 'TD', 'Productivité'),
-    ('Airtable', '#18BFFF', 'AR', 'Productivité'),
-    ('Miro', '#FFD02F', 'MI', 'Productivité'),
-    ('Canva', '#00C4CC', 'CV', 'Création'),
-    ('Adobe', '#FF0000', 'AD', 'Création'),
-    # Réseaux sociaux
     ('Facebook', '#1877F2', 'FB', 'Social'),
     ('Instagram', '#E4405F', 'IG', 'Social'),
     ('X', '#E8E8E8', 'X', 'Social'),
     ('TikTok', '#FE2C55', 'TT', 'Social'),
-    ('Snapchat', '#FFFC00', 'SC', 'Social'),
     ('Reddit', '#FF4500', 'RD', 'Social'),
-    ('Pinterest', '#E60023', 'PT', 'Social'),
     ('LinkedIn', '#0A66C2', 'LI', 'Social'),
-    ('Telegram', '#26A5E4', 'TG', 'Messagerie'),
-    ('WhatsApp', '#25D366', 'WA', 'Messagerie'),
-    ('Signal', '#3A76F0', 'SG', 'Messagerie'),
-    ('Viber', '#7360F2', 'VB', 'Messagerie'),
-    ('WeChat', '#07C160', 'WC', 'Messagerie'),
-    ('LINE', '#06C755', 'LY', 'Messagerie'),
-    ('VK', '#0077FF', 'VK', 'Social'),
-    ('Bluesky', '#0085FF', 'BS', 'Social'),
-    ('Mastodon', '#6364FF', 'MD', 'Social'),
-    ('Threads', '#E8E8E8', 'TH', 'Social'),
-    ('YouTube', '#FF0000', 'YT', 'Vidéo'),
-    ('Dribbble', '#EA4C89', 'DR', 'Création'),
-    ('Behance', '#1769FF', 'BH', 'Création'),
-    # Finance
     ('PayPal', '#00457C', 'PP', 'Finance'),
     ('Stripe', '#635BFF', 'SR', 'Finance'),
-    ('Binance', '#F0B90B', 'BI', 'Crypto'),
-    ('Coinbase', '#0052FF', 'CB', 'Crypto'),
-    ('Kraken', '#5741D9', 'KR', 'Crypto'),
-    ('Revolut', '#0666EB', 'RV', 'Banque'),
-    ('Wise', '#9FE870', 'WZ', 'Banque'),
-    ('N26', '#48AC98', 'N26', 'Banque'),
-    ('Monzo', '#FF4F40', 'MZ', 'Banque'),
-    ('Crypto.com', '#1199FA', 'CD', 'Crypto'),
-    ('Ledger', '#8B8B8B', 'LG', 'Crypto'),
-    ('Uphold', '#49C170', 'UH', 'Crypto'),
-    ('Shopify', '#96BF48', 'SH', 'E-commerce'),
-    ('Walmart', '#0071DC', 'WM', 'E-commerce'),
     ('Amazon', '#FF9900', 'AZ', 'E-commerce'),
-    # Média
-    ('Spotify', '#1DB954', 'SP', 'Musique'),
-    ('Deezer', '#A238FF', 'DZ', 'Musique'),
-    ('SoundCloud', '#FF5500', 'SD', 'Musique'),
-    ('Netflix', '#E50914', 'NF', 'Vidéo'),
-    ('Disney+', '#113CCF', 'D+', 'Vidéo'),
-    ('Prime Video', '#00A8E1', 'PV', 'Vidéo'),
-    ('Crunchyroll', '#F47521', 'CR', 'Vidéo'),
-    ('Hulu', '#1CE783', 'HU', 'Vidéo'),
-    ('Max', '#002BE7', 'MX', 'Vidéo'),
-    ('Apple Music', '#FA243C', 'AM', 'Musique'),
-    ('Tidal', '#E8E8E8', 'TI', 'Musique'),
-    ('Audible', '#F8991C', 'AU', 'Livre audio'),
-    # Mail / pro
-    ('Gmail', '#EA4335', 'GM', 'E-mail'),
-    ('Outlook', '#0078D4', 'OL', 'E-mail'),
-    ('ProtonMail', '#6D4AFF', 'PM', 'E-mail'),
-    ('Yahoo', '#6001D2', 'YH', 'E-mail'),
-    ('Mailchimp', '#FFE01B', 'MC', 'Marketing'),
-    ('SendGrid', '#1A82E2', 'SG', 'Marketing'),
-    ('Zendesk', '#03363D', 'ZD', 'Support'),
-    ('HubSpot', '#FF7A59', 'HS', 'Marketing'),
-    ('Salesforce', '#00A1E0', 'SF', 'Entreprise'),
     ('Autre', '#7C828E', '?', 'Personnalisé'),
 ]
 
@@ -256,10 +167,9 @@ SERVICES = [
 ]
 
 POPULAR = [
-    'Discord', 'Google', 'Steam', 'Microsoft', 'GitHub', 'Apple', 'Amazon',
-    'Facebook', 'Instagram', 'X', 'TikTok', 'Twitch', 'Epic Games',
-    'PlayStation', 'Xbox', 'Nintendo', 'PayPal', 'Binance', 'Coinbase',
-    'Proton', 'Bitwarden', 'Netflix', 'Spotify', 'Autre',
+    'Discord', 'Google', 'Microsoft', 'GitHub', 'Instagram', 'Twitch',
+    'Epic Games', 'PlayStation', 'Roblox', 'PayPal', 'Proton', 'Bitwarden',
+    'OpenAI', 'Amazon', 'Autre',
 ]
 
 
@@ -294,6 +204,70 @@ _RING_CTK_CACHE = {}
 _TITLE_CACHE = {}
 _GLOW_CACHE = {}
 _GLASS_TILE_CACHE = {}
+
+# Logos de marque (favicons) : téléchargés une fois puis mis en cache localement.
+SERVICE_DOMAINS = {
+    'Discord': 'discord.com', 'Epic Games': 'epicgames.com',
+    'PlayStation': 'playstation.com', 'Ubisoft Connect': 'ubisoft.com',
+    'Roblox': 'roblox.com', 'Twitch': 'twitch.tv',
+    'Google': 'google.com', 'Microsoft': 'microsoft.com',
+    'GitHub': 'github.com', 'GitLab': 'gitlab.com', 'Bitbucket': 'bitbucket.org',
+    'Amazon AWS': 'aws.amazon.com', 'Cloudflare': 'cloudflare.com',
+    'DigitalOcean': 'digitalocean.com', 'Vercel': 'vercel.com',
+    'Netlify': 'netlify.com', 'Docker': 'docker.com', 'OpenAI': 'openai.com',
+    'Notion': 'notion.so', 'Slack': 'slack.com', 'Zoom': 'zoom.us',
+    'Dropbox': 'dropbox.com', 'Proton': 'proton.me', 'Bitwarden': 'bitwarden.com',
+    'Facebook': 'facebook.com', 'Instagram': 'instagram.com', 'X': 'x.com',
+    'TikTok': 'tiktok.com', 'Reddit': 'reddit.com', 'LinkedIn': 'linkedin.com',
+    'PayPal': 'paypal.com', 'Stripe': 'stripe.com', 'Amazon': 'amazon.com',
+}
+_SERVICE_LOGO_CACHE = {}
+
+
+def service_logo_image(service, target):
+    """Récupère le favicon du service et le conserve dans le cache local."""
+    name = service.get('name', '')
+    if name in _SERVICE_LOGO_CACHE:
+        cached = _SERVICE_LOGO_CACHE[name]
+        return cached.copy() if cached is not None else None
+    domain = SERVICE_DOMAINS.get(name)
+    if not domain:
+        _SERVICE_LOGO_CACHE[name] = None
+        return None
+    cache_dir = APP_DIR / 'logos'
+    cache_file = cache_dir / (normalize(name).replace(' ', '-') + '.png')
+    try:
+        if cache_file.exists():
+            logo = Image.open(cache_file).convert('RGBA')
+        else:
+            url = 'https://www.google.com/s2/favicons?domain=' + domain + '&sz=128'
+            request = urllib.request.Request(url, headers={'User-Agent': 'NoctisAuth/2.10'})
+            with urllib.request.urlopen(request, timeout=0.45) as response:
+                data = response.read(256 * 1024)
+            logo = Image.open(io.BytesIO(data)).convert('RGBA')
+            cache_dir.mkdir(parents=True, exist_ok=True)
+            cache_file.write_bytes(data)
+        logo.thumbnail((target, target), Image.Resampling.LANCZOS)
+        _SERVICE_LOGO_CACHE[name] = logo.copy()
+        return logo
+    except Exception:
+        _SERVICE_LOGO_CACHE[name] = None
+        return None
+
+
+def draw_generic_service_mark(image):
+    """Pictogramme neutre de secours, sans monogramme."""
+    draw = ImageDraw.Draw(image)
+    w, h = image.size
+    cx, cy = w // 2, h // 2
+    r = int(w * 0.19)
+    width = max(3, w // 22)
+    draw.ellipse((cx-r, cy-r, cx+r, cy+r), outline='#FFFFFF', width=width)
+    draw.arc((cx-int(w*.29), cy-int(w*.29), cx+int(w*.29), cy+int(w*.29)),
+             start=205, end=335, fill='#FFFFFF', width=width)
+    draw.ellipse((cx-int(w*.035), cy-int(w*.035), cx+int(w*.035), cy+int(w*.035)),
+                 fill='#FFFFFF')
+
 
 
 def hex_rgb(color):
@@ -551,24 +525,13 @@ def service_tile_image(service, size=58):
     effects = Image.composite(effects, Image.new('RGBA', (sz, sz), (0, 0, 0, 0)), mask)
     img = Image.alpha_composite(tile, effects)
 
-    rgb = hex_rgb(color)
-    lum = (0.299 * rgb[0] + 0.587 * rgb[1] + 0.114 * rgb[2]) / 255.0
-    text_color = '#14161B' if lum > 0.66 else '#FFFFFF'
-    abbr = service.get('abbr') or (service['name'][:1].upper())
-    font_size = int(sz * (0.40 if len(abbr) <= 2 else 0.29))
-    font = pil_font(FONT_BOLD, max(8, font_size))
-    draw = ImageDraw.Draw(img)
-    if service['name'] == 'Discord':
-        try:
-            logo = Image.open(resource_path(os.path.join('assets', 'discord.png'))).convert('RGBA')
-            logo = logo.crop(logo.getbbox())
-            target = int(sz * 0.58)
-            logo.thumbnail((target, target), Image.Resampling.LANCZOS)
-            img.alpha_composite(logo, (int((sz - logo.width) / 2), int((sz - logo.height) / 2)))
-        except Exception:
-            draw.text((sz / 2, sz / 2), 'D', font=font, fill=text_color, anchor='mm')
+    target = int(sz * 0.58)
+    logo = service_logo_image(service, target)
+    if logo is not None:
+        logo.thumbnail((target, target), Image.Resampling.LANCZOS)
+        img.alpha_composite(logo, (int((sz - logo.width) / 2), int((sz - logo.height) / 2)))
     else:
-        draw.text((sz / 2, sz / 2 + sz * 0.015), abbr, font=font, fill=text_color, anchor='mm')
+        draw_generic_service_mark(img)
 
     image = img.resize((size, size), Image.Resampling.LANCZOS)
     _TILE_CACHE[key] = image

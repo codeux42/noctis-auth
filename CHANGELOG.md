@@ -22,7 +22,7 @@ Toutes les versions publiées sont disponibles dans les
 ### Conservé
 
 - Coffre AES-256-GCM, PBKDF2-SHA256 600 000 itérations et format `vault.json`.
-- Interface liquid glass, 119 services, recherche instantanée et défilement corrigé.
+- Interface liquid glass, 34 services compatibles TOTP, recherche instantanée et défilement corrigé.
 - Calcul TOTP hors ligne, copie en un clic et modales personnalisées.
 
 ### Sécurité

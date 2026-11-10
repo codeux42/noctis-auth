@@ -14,7 +14,7 @@ tous alignés avant de produire un installateur.
 from __future__ import annotations
 
 APP_NAME = "Noctis Auth"
-APP_VERSION = "2.9.1
+APP_VERSION = "2.9.1"
 APP_EXE = "NoctisAuth.exe"
 SETUP_EXE = "NoctisAuth_Setup.exe"
 APP_ID = "Noctis.Auth.Desktop"

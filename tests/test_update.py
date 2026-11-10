@@ -102,10 +102,20 @@ class UpdateDownloadTests(unittest.TestCase):
 
 
 class ApplicationTests(unittest.TestCase):
-    def test_services_preserved(self):
-        self.assertGreaterEqual(len(noctis_auth.SERVICES), 119)
-        self.assertEqual(len({s['name'] for s in noctis_auth.SERVICES}),
-                         len(noctis_auth.SERVICES))
+    def test_totp_service_catalog(self):
+        self.assertEqual(len(noctis_auth.SERVICES), 34)
+        names = {s['name'] for s in noctis_auth.SERVICES}
+        self.assertEqual(len(names), len(noctis_auth.SERVICES))
+        self.assertIn('Discord', names)
+        self.assertIn('Google', names)
+        self.assertIn('Autre', names)
+        self.assertNotIn('Netflix', names)
+        self.assertNotIn('Spotify', names)
+
+    def test_base32_totp_secret(self):
+        self.assertEqual(noctis_auth.totp('JBSWY3DPEHPK3PXP', timestamp=0), '282760')
+        with self.assertRaises(Exception):
+            noctis_auth.b32decode('CLE-INVENTEE')
 
     def test_assets_found(self):
         for name in ('assets/noctis_logo.png', 'assets/noctis_background.png',

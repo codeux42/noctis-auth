@@ -1,4 +1,4 @@
-NOCTIS AUTH 2.9.0
+NOCTIS AUTH 2.9.1
 
 - Installateur Windows unique : NoctisAuth_Setup.exe. Aucun Python, aucune
   dépendance et aucune fenêtre de commande ne sont nécessaires.

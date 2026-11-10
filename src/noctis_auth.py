@@ -181,7 +181,6 @@ def normalize(value):
 SERVICE_BY_KEY = {normalize(s['name']): s for s in SERVICES}
 SERVICE_BY_KEY['twitter'] = SERVICE_BY_KEY['x']
 SERVICE_BY_KEY['amazon web services'] = SERVICE_BY_KEY['amazon aws']
-SERVICE_BY_KEY['battlenet'] = SERVICE_BY_KEY['battle.net']
 SERVICE_BY_KEY['google authenticator'] = SERVICE_BY_KEY['google']
 
 

@@ -70,7 +70,7 @@ en production, signe les deux exécutables avec un certificat Authenticode
 
 - **Coffre local chiffré AES-256-GCM**, clé dérivée par PBKDF2-SHA256 (600 000 itérations).
 - **Aucun envoi de secret** : les clés A2F ne quittent jamais l’ordinateur.
-- **119 services** avec recherche instantanée, catégories et alias.
+- **34 services compatibles TOTP** avec recherche instantanée, catégories et alias.
 - **Codes TOTP** calculés hors ligne, copie en un clic, anneau de compte à rebours.
 - **Interface liquid glass** : boutons, champs et cartes rendus en images vectorielles.
 - **Défilement natif corrigé** : la molette n’affecte que la liste survolée.
